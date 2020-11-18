@@ -1,11 +1,13 @@
 ## hw-report
----
-### To setup:
+### Setting up:
 ```bash
     python -m venv <env_name>
 
-    source <env_name>/bin/activate  // linux/macos
-    <env_name>\Scripts\activate.bat // windows
+    # linux/macos
+    source <env_name>/bin/activate
+    
+    # windows
+    <env_name>\Scripts\activate.bat
 
     pip install -r requirements.txt
 ```
@@ -16,6 +18,11 @@
     python -m app
 ```
 
+### Testing
+```bash
+    pytest
+```
+
 ## QT Designer
 
-QTDesigner executable will be store in site-packages/QTDesigner
+QTDesigner executable will be store in site-packages/QTDesigner for windows and in site-packages/qt-tools for linux
