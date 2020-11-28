@@ -3,6 +3,8 @@ import platform
 from subprocess import Popen, PIPE
 from distutils import spawn
 
+from app.lib.gpu import GPU
+
 
 def get_gpus_info():
 
@@ -15,7 +17,7 @@ def get_gpus_info():
     format_flags = "--format=csv" 
 
     try:
-        proc = Popen([executable, f'{query_flags}', format_flags], stdout=PIPE)
+        proc = Popen([executable, f'{query_flags}', format_flags, '--nounits'], stdout=PIPE)
         stdout, stderr = proc.communicate()
     except:
         print(stderr)
@@ -34,17 +36,29 @@ def get_executable():
     return executable
 
 
-def parse_gpu(csv_line):
-    print(csv_line)
+def parse_gpu(headers, props_list):
+    data = dict()
+    for field in GPU.REQUIRED_FIELDS:
+        if field in headers:
+            index = headers.index(field)
+            data[field] = props_list[index]
+        else:
+            data[field] = 'N/A'
+
+    return GPU(data)
 
 
 def build_gpus():
     output = get_gpus_info()
     gpu_rows = output.split(os.linesep)
-    headers = gpu_rows[0].split(', ')
+    headers = [header[0: header.find(' ')] if ' ' in header else header for header in gpu_rows[0].split(', ') ]
     gpus = list()
+
     for line in gpu_rows[1:]:
-        gpus.append(parse_gpu(line))
+        if len(line) > 0:
+            gpus.append(parse_gpu(headers, line.split(', ')))
+
+    return gpus
 
     
 
