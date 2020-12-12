@@ -6,7 +6,7 @@ class GPUComponent(QtWidgets.QWidget, gpu_layout.Ui_Form):
     def __init__(self, parent, gpu_list):
         super().__init__(parent)
         self.setupUi(self)
-        self.gpu = gpu_list[0]
+        self.gpu = gpu_list
 
         self.set_values()
     

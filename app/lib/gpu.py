@@ -1,32 +1,25 @@
 class GPU:
 
-    REQUIRED_FIELDS = (
-        'name',
-        'driver_version', 
-        'utilization.gpu', 
-        'utilization.memory',
-        'memory.total',
-        'memory.used',
-        'temperature.gpu', 
-        'temperature.memory',
-    )
+    NAME = 'name'
+    VENDOR = 'vendor'
+    DRIVER_VERSION = 'driver_version'
+    DRIVER_TOTAL_MEMORY = 'total_memory'
 
-    def __init__(self, data):
-        self.name = data['name'] 
-
-        self.driver_version = data['driver_version'] 
+    def __init__(self, name, driver_version, total_memory):
+        self.name = name
+        self.driver_version = driver_version
 
         self.utilization = {
-            'gpu': data['utilization.gpu'],
-            'memory': data['utilization.memory']
+            'gpu': 'N/A', # data['utilization.gpu'],
+            'memory': 'N/A' # data['utilization.memory']
         } 
 
         self.memory = {
-            'total': data['memory.total'],
-            'used': data['memory.used']
+            'total': total_memory, # data['memory.total'],
+            'used': 'N/A' # data['memory.used']
         }
 
         self.temperature = {
-            'gpu': data['temperature.gpu'],
-            'memory': data['temperature.memory']
+            'gpu': 'N/A', # data['temperature.gpu'],
+            'memory': 'N/A' # data['temperature.memory']
         }
