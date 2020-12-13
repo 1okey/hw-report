@@ -39,7 +39,7 @@ class WindowsNVIDIAInfo(gpu_cli):
         self.temp_flags = 'temperature.memory,temperature.gpu'
 
         self.cli_params = [
-            f'--query-gpu=index,uuid,driver_version,name,gpu_serial,display_active,display_mode,{self.util_flags},{self.memory_flags},{self.temp_flags}'
+            f'--query-gpu=index,uuid,driver_version,name,gpu_serial,display_active,display_mode,{self.util_flags},{self.memory_flags},{self.temp_flags}',
             '--format=csv',
             '--nounits',
         ]

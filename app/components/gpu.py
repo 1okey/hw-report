@@ -3,10 +3,10 @@ from PyQt5 import QtWidgets
 from app.gui.components import gpu_layout
 
 class GPUComponent(QtWidgets.QWidget, gpu_layout.Ui_Form):
-    def __init__(self, parent, gpu_list):
+    def __init__(self, parent, gpu):
         super().__init__(parent)
         self.setupUi(self)
-        self.gpu = gpu_list
+        self.gpu = gpu
 
         self.set_values()
     

@@ -22,5 +22,5 @@ def get_main_gpu():
     if len(gpus) > 1:
         return gpus[-1]
     
-    return gpus
+    return gpus[0]
 
