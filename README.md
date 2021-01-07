@@ -9,7 +9,11 @@
     # windows
     <env_name>\Scripts\activate.bat
 
-    pip install -r requirements.txt
+    # linux/macos
+    pip install -r requirements.txt 
+
+    # macos
+    pip install -r macos.requirements.txt
 ```
 
 ### Running app

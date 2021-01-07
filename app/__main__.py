@@ -4,6 +4,8 @@ from PyQt5 import QtWidgets
 from app.app import Application
 
 qt_app = QtWidgets.QApplication(sys.argv)
+
 app = Application()
 app.show()
-qt_app.exec_()
+
+sys.exit(qt_app.exec())
