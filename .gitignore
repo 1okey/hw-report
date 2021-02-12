@@ -1,6 +1,12 @@
-# put you env folder name below
-env
+# directories
+build
 .vscode
 __pycache__
 .pytest_cache
+env
+
+# cpp project files
+
+# python project files
 *.pyc
+
