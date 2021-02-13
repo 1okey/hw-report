@@ -6,11 +6,11 @@
 - Qt5
 
 ## Setup:
-Either put `CMAKE_TOOLCHAIN_FILE` into `.vscode/settings.json`:
+Either put `CMAKE_TOOLCHAIN_FILE` into `.vscode/settings.json` (maje sure VCPKG_ROOT env variable is set):
 ```json
 {
     "cmake.configureSettings": {
-      "CMAKE_TOOLCHAIN_FILE": "C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      "CMAKE_TOOLCHAIN_FILE": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
     }
   }
 ```
