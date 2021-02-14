@@ -5,6 +5,8 @@ __pycache__
 env
 
 # cpp project files
+.o
+.exe
 
 # python project files
 *.pyc

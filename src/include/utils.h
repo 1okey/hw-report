@@ -1,3 +1,6 @@
+#ifndef UTILS_H
+#define UTILS_H
+
 #include <cstdio>
 #include <iostream>
 #include <memory>
@@ -13,3 +16,5 @@ string execute(const string& command);
 string get_system();
 
 string get_executable();
+
+#endif // UTILS_H
