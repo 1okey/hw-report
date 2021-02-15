@@ -1,5 +1,7 @@
-#include "include/hwreport.h"
 #include <QApplication>
+
+#include "include/hwreport.h"
+#include "include/utils.h"
 
 int main(int argc, char *argv[])
 {

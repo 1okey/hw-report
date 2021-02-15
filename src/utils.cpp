@@ -18,29 +18,53 @@ int close(FILE* fptr)
     #endif
 }
 
-string get_system()
+System get_system()
 {
     #ifdef _WIN32
-        return "Windows 32-bit";
+        return System::win32;
     #elif _WIN64
-        return "Windows 64-bit";
+        return System::win64;
     #elif __APPLE__ || __MACH__
-        return "Mac OSX";
+        return System::darwin;
     #elif __linux__
-        return "Linux";
-    #elif __FreeBSD__
-        return "FreeBSD";
-    #elif __unix || __unix__
-        return "Unix";
+        return System::linux;
     #else
-        return "Other";
+        return System::other;
     #endif
 }   
 
 string get_executable() {
-    return ""; // TODO implement
-}
 
+    string executable;
+
+    switch(get_system()) {
+        case System::win32:
+        case System::win64:
+            executable = "nvidia-smi";
+            break;
+        case System::darwin:
+            executable = "system_profiler";
+            break;
+        case System::linux:
+            break;
+        case System::other:
+        default:
+            break;
+    }
+
+    if (executable.size() == 0) {
+        throw new std::runtime_error("Current platform is not supported");
+    }
+    
+    FILE* pipe = run(executable, "r");
+    if (!pipe) {
+        throw new std::runtime_error("Couldn't open " + executable);
+    }
+    
+    close(pipe);
+
+    return executable;
+}
 
 string execute(const string& command)
 {
