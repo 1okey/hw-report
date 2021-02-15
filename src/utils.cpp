@@ -38,7 +38,7 @@ string get_system()
 }   
 
 string get_executable() {
-
+    return ""; // TODO implement
 }
 
 
