@@ -6,19 +6,25 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <vector>
 #include <array>
 #include <string_view>
 #include <stdio.h>
 
+#include "gpu_cli.h"
+
 using std::string;
 using std::string_view;
+using std::vector;
 
 enum class System { win32, win64, darwin, linux, other };
 
-string execute(const string& command);
+FILE* run(const string& command, const string& flags);
+
+int close(FILE* fptr);
 
 System get_system();
 
-string get_executable();
+GpuCLI* get_cli_binary();
 
 #endif // UTILS_H

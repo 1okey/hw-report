@@ -33,59 +33,27 @@ System get_system()
     #endif
 }   
 
-string get_executable() {
+GpuCLI* get_binary_name() {
 
-    string executable;
+    GpuCLI* executable;
 
     switch(get_system()) {
         case System::win32:
         case System::win64:
-            executable = "nvidia-smi";
+            executable = new WindowsInfo("nvidia-smi", {
+                "--query-gpu=index,uuid,driver_version,name,gpu_serial,display_active,display_mode,utilization.gpu,utilization.memory,memory.total,memory.used,memory.free,temperature.memory,temperature.gpu",
+                "--format=csv",
+                "--nounits",
+            });
             break;
         case System::darwin:
-            executable = "system_profiler";
+            executable = new DarwinInfo("system_profiler", {"SPDisplaysDataType", "-json"});
             break;
         case System::linux:
-            break;
         case System::other:
         default:
-            break;
+            executable = new DummyInfo();
     }
-
-    if (executable.size() == 0) {
-        throw new std::runtime_error("Current platform is not supported");
-    }
-    
-    FILE* pipe = run(executable, "r");
-    if (!pipe) {
-        throw new std::runtime_error("Couldn't open " + executable);
-    }
-    
-    close(pipe);
 
     return executable;
-}
-
-string execute(const string& command)
-{
-    char buffer[128];
-    std::string result = "";
-    FILE* pipe = run(command, "r");
-
-    if (!pipe) {
-        return result;
-    }
-
-    try {
-        while (fgets(buffer, sizeof buffer, pipe) != NULL) {
-            result += buffer;
-        }
-    } catch (...) {
-        close(pipe);
-        throw;
-    }
-
-    close(pipe);
-
-    return move(result);
 }
