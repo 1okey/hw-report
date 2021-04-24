@@ -1,32 +1,20 @@
-## hw-report
-### Setting up:
-```bash
-    python -m venv <env_name>
+## Prerequisites:
+- vcpkg
+- cmake
 
-    # linux/macos
-    source <env_name>/bin/activate
-    
-    # windows
-    <env_name>\Scripts\activate.bat
+## Deps:
+- Qt5
 
-    # linux/macos
-    pip install -r requirements.txt 
-
-    # macos
-    pip install -r macos.requirements.txt
+## Setup:
+Either put `CMAKE_TOOLCHAIN_FILE` into `.vscode/settings.json` (maje sure VCPKG_ROOT env variable is set):
+```json
+{
+    "cmake.configureSettings": {
+      "CMAKE_TOOLCHAIN_FILE": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    }
+  }
 ```
-
-### Running app
-
-```bash
-    python -m app
+Or provide it as a build flag to cmake:
+```sh 
+cmake build -DCMAKE_TOOLCHAIN_FILE=C:\dev\vcpkg\scripts\buildsystems\vcpkg.cmake
 ```
-
-### Testing
-```bash
-    pytest
-```
-
-## QT Designer
-
-QTDesigner executable will be store in site-packages/QTDesigner for windows and in site-packages/qt-tools for linux
