@@ -1,16 +1,4 @@
-# directories
-build
-__pycache__
-.pytest_cache
-env
-
 # OS specific files
 .DS_Store
-
-# cpp project files
-.o
-.exe
-
-# python project files
-*.pyc
-
+old
+build
