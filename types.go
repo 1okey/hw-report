@@ -13,7 +13,8 @@ type CPU struct {
 
 type GPU struct {
 	Vendor
-	Features []string
+	Memory string
+	DriverVersion string
 }
 
 type RAM struct {
@@ -37,4 +38,5 @@ type OSInfo interface {
 
 type HwReport struct{
 	Cpu CPU
+	Gpu GPU
 }
