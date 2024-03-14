@@ -18,7 +18,14 @@ var fields_map = map[string]string{
 	"brand": "brand_string",
 }
 
- func get_darwin_all_cpu_fields() ([]string, error) {
+var gpu_fields_map = map[string]string{
+	"driver_version": "EFI Driver Version",
+	"memory": "VRAM",
+	"vendor": "Vendor",
+	"brand": "Chipset Model",
+}
+
+func get_darwin_all_cpu_fields() ([]string, error) {
 	cmd := exec.Command("sysctl", "-a")
 	output, err := cmd.Output()
 
@@ -40,7 +47,7 @@ var fields_map = map[string]string{
 	}
 
 	return lines, nil
- }
+}
 
 func filter_necessary_cpu_fields(cpu_lines []string) map[string]string {
 	cpu_map := make(map[string]string)
@@ -49,14 +56,81 @@ func filter_necessary_cpu_fields(cpu_lines []string) map[string]string {
 	for _, line := range cpu_lines {
 		sep_idx := strings.Index(line, ":")
 
-		for k, v := range fields_map {
-			if line[cpu_prefix_len:sep_idx] == v {
-				cpu_map[k] = strings.Trim(line[sep_idx + 1:], " ")
+		if sep_idx >= cpu_prefix_len {
+			for k, v := range fields_map {
+				if line[cpu_prefix_len:sep_idx] == v {
+					cpu_map[k] = strings.Trim(line[sep_idx + 1:], " ")
+				}
 			}
 		}
 	}
 
 	return cpu_map
+}
+
+func GetDarwinCPU(cpu_fields []string) CPU {
+	filtered_fields := filter_necessary_cpu_fields(cpu_fields)
+
+	cores, _ := strconv.ParseInt(filtered_fields["cores"], 10, 8)
+
+	return CPU{
+		Vendor: Vendor{
+			Name:  filtered_fields["vendor"],
+			Model: filtered_fields["brand"],
+		},
+		Cores: uint8(cores),
+		Features: strings.Split(filtered_fields["features"], " "),
+	}
+}
+
+func get_darwin_gpu_report() ([]string, error) {
+	cmd := exec.Command("system_profiler", "SPDisplaysDataType")
+	output, err := cmd.Output()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return []string{}, err
+	}
+
+	var lines = make([]string, 0)
+	var start = 0
+	for idx, ch := range output {
+		if ch == byte('\n') {
+			lines = append(lines, strings.Trim(string(output[start:idx]), " "))
+			start = idx+1
+		}
+	}
+
+	return lines, nil
+}
+
+func filter_necessary_gpu_fields(gpu_lines []string) map[string]string {
+	gpu_map := make(map[string]string)
+	for _, line := range gpu_lines {
+		sep_idx := strings.Index(line, ":")
+
+		if sep_idx >= 0 {
+			for k, v := range gpu_fields_map {
+				if line[:sep_idx] == v {
+					gpu_map[k] = strings.Trim(line[sep_idx + 1:], " ")
+				}
+			}
+		}
+	}
+
+	return gpu_map
+}
+
+func GetDarwinGPU(gpu_fields []string) GPU {
+	filtered_fields := filter_necessary_gpu_fields(gpu_fields)
+	return GPU{
+		Vendor: Vendor{
+			Name: filtered_fields["vendor"],
+			Model: filtered_fields["brand"],
+		},
+		Memory: filtered_fields["memory"],
+		DriverVersion: filtered_fields["driver_version"],
+	}
 }
 
 func GetDarwinReport() HwReport {
@@ -66,17 +140,17 @@ func GetDarwinReport() HwReport {
 		panic(err)
 	}
 
-	filtered_fields := filter_necessary_cpu_fields(darwin_cpu_report)
-	cores, err := strconv.ParseInt(filtered_fields["cores"], 10, 8)
+	cpu := GetDarwinCPU(darwin_cpu_report)
+
+	gpu_fields, err := get_darwin_gpu_report()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	gpu := GetDarwinGPU(gpu_fields)
 
 	return HwReport{
-		Cpu: CPU{
-			Vendor: Vendor{
-				Name:  filtered_fields["vendor"],
-				Model: filtered_fields["brand"],
-			},
-			Cores: uint8(cores),
-			Features: strings.Split(filtered_fields["features"], " "),
-		},
+		Cpu: cpu,
+		Gpu: gpu,
 	}
 }
