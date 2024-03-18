@@ -25,6 +25,13 @@ var gpu_fields_map = map[string]string{
 	"brand": "Chipset Model",
 }
 
+var mem_fields_map = map[string]string{
+	"size": "Size",
+	"speed": "Speed",
+	"type": "Type",
+	"brand": "Manufacturer",
+}
+
 func get_darwin_all_cpu_fields() ([]string, error) {
 	cmd := exec.Command("sysctl", "-a")
 	output, err := cmd.Output()
@@ -133,6 +140,68 @@ func GetDarwinGPU(gpu_fields []string) GPU {
 	}
 }
 
+func get_darwin_mem_report() ([]string, error) {
+	cmd := exec.Command("system_profiler", "SPMemoryDataType")
+	output, err := cmd.Output()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return []string{}, err
+	}
+
+	var lines = make([]string, 0)
+	var start = 0
+	for idx, ch := range output {
+		if ch == byte('\n') {
+			lines = append(lines, strings.Trim(string(output[start:idx]), " "))
+			start = idx+1
+		}
+	}
+
+	return lines, nil
+}
+
+
+func parse_mem_from_lines(lines []string) RAM {
+	mem_map := make(map[string]string)
+	for _, line := range lines {
+		sep_idx := strings.Index(line, ":")
+
+		if sep_idx >= 0 {
+			for k, v := range mem_fields_map {
+				if line[:sep_idx] == v {
+					mem_map[k] = strings.Trim(line[sep_idx + 1:], " ")
+				}
+			}
+		}
+	}
+	return RAM{
+		Vendor: Vendor{
+			Model: "-",
+			Name: mem_map["brand"],
+		},
+		Speed: mem_map["speed"],
+		Size: mem_map["size"],
+		Type: mem_map["type"],
+	}
+}
+
+func GetDarwinMemory(mem_lines []string) []RAM {
+	mem_banks := make([]RAM, 0)
+
+	for idx := 0; idx < len(mem_lines); {
+		if strings.Index(mem_lines[idx], "BANK") >= 0 && idx + 9 < len(mem_lines) {
+			mem_banks = append(mem_banks, parse_mem_from_lines(mem_lines[idx + 2: idx + 9]))	
+			idx += 9
+		} else {
+			idx += 1
+		}
+	}
+
+	return mem_banks
+}
+
+
 func GetDarwinReport() HwReport {
 	darwin_cpu_report, err := get_darwin_all_cpu_fields()
 	if err != nil { 
@@ -149,8 +218,15 @@ func GetDarwinReport() HwReport {
 
 	gpu := GetDarwinGPU(gpu_fields)
 
+	mem_fields, err := get_darwin_mem_report()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	mem := GetDarwinMemory(mem_fields)
+
 	return HwReport{
 		Cpu: cpu,
 		Gpu: gpu,
+		Ram: mem,
 	}
 }

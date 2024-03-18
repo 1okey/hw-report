@@ -12,7 +12,6 @@ func get_report() (HwReport, error) {
 		return GetWinReport(), nil
 	case "linux":
 		return GetLinuxReport(), nil
-
 	case "darwin":
 		return GetDarwinReport(), nil
 	default:
