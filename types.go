@@ -19,7 +19,9 @@ type GPU struct {
 
 type RAM struct {
 	Vendor
-	Size uint64
+	Size string
+	Speed string
+	Type string
 }
 
 type Storage struct {
@@ -39,4 +41,5 @@ type OSInfo interface {
 type HwReport struct{
 	Cpu CPU
 	Gpu GPU
+	Ram []RAM
 }
