@@ -1,4 +1,4 @@
-package main
+package darwin
 
 import (
 	"fmt"
@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	. "github.com/1okey/hw-report/types"
 )
 
 const cpu_prefix = "machdep.cpu."
