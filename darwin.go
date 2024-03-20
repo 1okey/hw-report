@@ -61,9 +61,7 @@ func filter_necessary_cpu_fields(cpu_lines []string) map[string]string {
 
 	var cpu_prefix_len = len(cpu_prefix)
 	for _, line := range cpu_lines {
-		sep_idx := strings.Index(line, ":")
-
-		if sep_idx >= cpu_prefix_len {
+		if sep_idx := strings.Index(line, ":"); sep_idx >= cpu_prefix_len {
 			for k, v := range fields_map {
 				if line[cpu_prefix_len:sep_idx] == v {
 					cpu_map[k] = strings.Trim(line[sep_idx + 1:], " ")
