@@ -4,8 +4,7 @@ import (
 	"strings"
 )
 
-
-type Serializable interface{
+type Serializable interface {
 	ToString() string
 }
 
@@ -15,42 +14,41 @@ type Heading struct {
 }
 
 func (h Heading) ToString() string {
-	return strings.Repeat("#", int(h.size)) + " " + h.text  + "\n"
+	return strings.Repeat("#", int(h.size)) + " " + h.text + "\n"
 }
 
 type TextStyle string
 
 const (
-	Normal	TextStyle = "normal"
-	Code	TextStyle = "code"
-	Bold	TextStyle = "bold"
-	Italic	TextStyle = "italic"
+	Normal TextStyle = "normal"
+	Code   TextStyle = "code"
+	Bold   TextStyle = "bold"
+	Italic TextStyle = "italic"
 )
 
 type Text struct {
-	text string
+	text  string
 	style TextStyle
 }
 
 func (p Text) ToString() string {
 	switch p.style {
-		default:
-		case Normal:
+	default:
+	case Normal:
 		return p.text
 
-		case Code:
+	case Code:
 		return " `" + p.text + "` "
 
-		case Bold:
+	case Bold:
 		return " __" + p.text + "__ "
 
-		case Italic:
+	case Italic:
 		return " *" + p.text + "* "
 	}
 
 	return ""
 }
-
 
 type Paragraph struct {
 	text_elements []Text
@@ -88,4 +86,4 @@ func (d *Markdown) Print() string {
 	}
 
 	return strings.Join(output, "")
-} 
+}

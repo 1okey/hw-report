@@ -13,15 +13,15 @@ type CPU struct {
 
 type GPU struct {
 	Vendor
-	Memory string
+	Memory        string
 	DriverVersion string
 }
 
 type RAM struct {
 	Vendor
-	Size string
+	Size  string
 	Speed string
-	Type string
+	Type  string
 }
 
 type Storage struct {
@@ -38,7 +38,7 @@ type OSInfo interface {
 	GetRAM() RAM
 }
 
-type HwReport struct{
+type HwReport struct {
 	Cpu CPU
 	Gpu GPU
 	Ram []RAM

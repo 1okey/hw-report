@@ -14,23 +14,23 @@ const cpu_prefix = "machdep.cpu."
 
 var fields_map = map[string]string{
 	"features": "features",
-	"cores": "core_count",
-	"threads": "thread_count",
-	"vendor": "vendor",
-	"brand": "brand_string",
+	"cores":    "core_count",
+	"threads":  "thread_count",
+	"vendor":   "vendor",
+	"brand":    "brand_string",
 }
 
 var gpu_fields_map = map[string]string{
 	"driver_version": "EFI Driver Version",
-	"memory": "VRAM",
-	"vendor": "Vendor",
-	"brand": "Chipset Model",
+	"memory":         "VRAM",
+	"vendor":         "Vendor",
+	"brand":          "Chipset Model",
 }
 
 var mem_fields_map = map[string]string{
-	"size": "Size",
+	"size":  "Size",
 	"speed": "Speed",
-	"type": "Type",
+	"type":  "Type",
 	"brand": "Manufacturer",
 }
 
@@ -48,10 +48,10 @@ func get_darwin_all_cpu_fields() ([]string, error) {
 	var cpu_prefix_len = len(cpu_prefix)
 	for idx, ch := range output {
 		if ch == byte('\n') {
-			if string(output[start:start + cpu_prefix_len]) == cpu_prefix {
+			if string(output[start:start+cpu_prefix_len]) == cpu_prefix {
 				lines = append(lines, string(output[start:idx]))
 			}
-			start = idx+1
+			start = idx + 1
 		}
 	}
 
@@ -66,7 +66,7 @@ func filter_necessary_cpu_fields(cpu_lines []string) map[string]string {
 		if sep_idx := strings.Index(line, ":"); sep_idx >= cpu_prefix_len {
 			for k, v := range fields_map {
 				if line[cpu_prefix_len:sep_idx] == v {
-					cpu_map[k] = strings.Trim(line[sep_idx + 1:], " ")
+					cpu_map[k] = strings.Trim(line[sep_idx+1:], " ")
 				}
 			}
 		}
@@ -85,7 +85,7 @@ func GetDarwinCPU(cpu_fields []string) CPU {
 			Name:  filtered_fields["vendor"],
 			Model: filtered_fields["brand"],
 		},
-		Cores: uint8(cores),
+		Cores:    uint8(cores),
 		Features: strings.Split(filtered_fields["features"], " "),
 	}
 }
@@ -104,7 +104,7 @@ func get_darwin_gpu_report() ([]string, error) {
 	for idx, ch := range output {
 		if ch == byte('\n') {
 			lines = append(lines, strings.Trim(string(output[start:idx]), " "))
-			start = idx+1
+			start = idx + 1
 		}
 	}
 
@@ -119,7 +119,7 @@ func filter_necessary_gpu_fields(gpu_lines []string) map[string]string {
 		if sep_idx >= 0 {
 			for k, v := range gpu_fields_map {
 				if line[:sep_idx] == v {
-					gpu_map[k] = strings.Trim(line[sep_idx + 1:], " ")
+					gpu_map[k] = strings.Trim(line[sep_idx+1:], " ")
 				}
 			}
 		}
@@ -132,10 +132,10 @@ func GetDarwinGPU(gpu_fields []string) GPU {
 	filtered_fields := filter_necessary_gpu_fields(gpu_fields)
 	return GPU{
 		Vendor: Vendor{
-			Name: filtered_fields["vendor"],
+			Name:  filtered_fields["vendor"],
 			Model: filtered_fields["brand"],
 		},
-		Memory: filtered_fields["memory"],
+		Memory:        filtered_fields["memory"],
 		DriverVersion: filtered_fields["driver_version"],
 	}
 }
@@ -154,13 +154,12 @@ func get_darwin_mem_report() ([]string, error) {
 	for idx, ch := range output {
 		if ch == byte('\n') {
 			lines = append(lines, strings.Trim(string(output[start:idx]), " "))
-			start = idx+1
+			start = idx + 1
 		}
 	}
 
 	return lines, nil
 }
-
 
 func parse_mem_from_lines(lines []string) RAM {
 	mem_map := make(map[string]string)
@@ -170,7 +169,7 @@ func parse_mem_from_lines(lines []string) RAM {
 		if sep_idx >= 0 {
 			for k, v := range mem_fields_map {
 				if line[:sep_idx] == v {
-					mem_map[k] = strings.Trim(line[sep_idx + 1:], " ")
+					mem_map[k] = strings.Trim(line[sep_idx+1:], " ")
 				}
 			}
 		}
@@ -178,11 +177,11 @@ func parse_mem_from_lines(lines []string) RAM {
 	return RAM{
 		Vendor: Vendor{
 			Model: "-",
-			Name: mem_map["brand"],
+			Name:  mem_map["brand"],
 		},
 		Speed: mem_map["speed"],
-		Size: mem_map["size"],
-		Type: mem_map["type"],
+		Size:  mem_map["size"],
+		Type:  mem_map["type"],
 	}
 }
 
@@ -190,8 +189,8 @@ func GetDarwinMemory(mem_lines []string) []RAM {
 	mem_banks := make([]RAM, 0)
 
 	for idx := 0; idx < len(mem_lines); {
-		if strings.Index(mem_lines[idx], "BANK") >= 0 && idx + 9 < len(mem_lines) {
-			mem_banks = append(mem_banks, parse_mem_from_lines(mem_lines[idx + 2: idx + 9]))	
+		if strings.Index(mem_lines[idx], "BANK") >= 0 && idx+9 < len(mem_lines) {
+			mem_banks = append(mem_banks, parse_mem_from_lines(mem_lines[idx+2:idx+9]))
 			idx += 9
 		} else {
 			idx += 1
@@ -201,10 +200,9 @@ func GetDarwinMemory(mem_lines []string) []RAM {
 	return mem_banks
 }
 
-
 func GetDarwinReport() HwReport {
 	darwin_cpu_report, err := get_darwin_all_cpu_fields()
-	if err != nil { 
+	if err != nil {
 		log.Fatal(err.Error())
 		panic(err)
 	}
