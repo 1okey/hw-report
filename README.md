@@ -1,20 +1,3 @@
-## Prerequisites:
-- vcpkg
-- cmake
-
-## Deps:
-- Qt5
-
-## Setup:
-Either put `CMAKE_TOOLCHAIN_FILE` into `.vscode/settings.json` (maje sure VCPKG_ROOT env variable is set):
-```json
-{
-    "cmake.configureSettings": {
-      "CMAKE_TOOLCHAIN_FILE": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-    }
-  }
-```
-Or provide it as a build flag to cmake:
-```sh 
-cmake build -DCMAKE_TOOLCHAIN_FILE=C:\dev\vcpkg\scripts\buildsystems\vcpkg.cmake
-```
+### TODO
+- [ ] find out how to run test within different envs (MSDOS, darwin, linux)
+- [ ] API to get report in html, markdown, json
