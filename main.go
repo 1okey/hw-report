@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"runtime"
@@ -26,14 +25,6 @@ func make_report() (HwReport, error) {
 	default:
 		return HwReport{}, errors.New("unsupported system")
 	}
-}
-
-func save_report(report HwReport, format string) {
-	log.Panic("save_report not implemented")
-}
-
-func print_report(report HwReport) {
-	fmt.Printf("%+v", report)
 }
 
 var SUPPORTED_FORMATS []string = []string{"markdown"}
@@ -64,8 +55,8 @@ func main() {
 	}
 
 	if len(format) > 0 {
-		save_report(report, format)
+		report.Save()
 	} else {
-		print_report(report)
+		report.Print()
 	}
 }
