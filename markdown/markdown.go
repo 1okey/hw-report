@@ -9,12 +9,12 @@ type Serializable interface {
 }
 
 type Heading struct {
-	text string
+	text Text
 	size uint8
 }
 
 func (h Heading) ToString() string {
-	return strings.Repeat("#", int(h.size)) + " " + h.text + "\n"
+	return strings.Repeat("#", int(h.size)) + " " + h.text.ToString() + "\n"
 }
 
 type TextStyle string
