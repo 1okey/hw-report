@@ -22,7 +22,7 @@ var fields_map = map[string]string{
 
 var gpu_fields_map = map[string]string{
 	"driver_version": "EFI Driver Version",
-	"memory":         "VRAM",
+	"memory":         "VRAM (Total)",
 	"vendor":         "Vendor",
 	"brand":          "Chipset Model",
 }

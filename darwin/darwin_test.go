@@ -32,7 +32,7 @@ func TestInvalidCpuInput(t *testing.T) {
 
 func TestValidCpuInput(t *testing.T) {
 	gpu := GetDarwinGPU([]string{
-		"VRAM: 8 GB",
+		"VRAM (Total): 8 GB",
 	})
 
 	assert.Equal(t, "8 GB", gpu.Memory)
