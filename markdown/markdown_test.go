@@ -8,29 +8,29 @@ import (
 )
 
 func TestHeading(t *testing.T) {
-	h := Heading{text: Text{text:"AN UNEXPECTED PARTY", style: Normal}, size: 3}
+	h := Heading{Text: Paragraph{[]Text{{Content:"AN UNEXPECTED PARTY", Style: Normal}}}, Size: 3}
 
-	assert.Equal(t, "### AN UNEXPECTED PARTY\n", h.ToString())
+	assert.Equal(t, "### AN UNEXPECTED PARTY" + LINE_RETURN, h.ToString())
 }
 
 func TestMarkdown(t *testing.T) {
 	md := Markdown{}
 
-	h := Heading{text: Text{text:"AN UNEXPECTED PARTY", style: Normal}, size: 3}
-	text := Text{text: "In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, and that means comfort.", style: Normal}
+	h := Heading{Text: Paragraph{TextElements: []Text{{Content:"AN UNEXPECTED PARTY", Style: Normal}}}, Size: 3}
+	text := Text{Content: "In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, and that means comfort.", Style: Normal}
 	md.Add(h, text)
 
-	assert.Len(t, strings.Split(md.Print(), "\n"), 2)
+	assert.Len(t, strings.Split(md.Print(), LINE_RETURN), 2)
 
-	one := Text{text: "In a hole in the ground there lived a hobbit. ", style: Normal}
-	other := Text{text: "Not a nasty, dirty, wet hole,", style: Normal}
-	other_bold := Text{text: "filled with the ends of worms", style: Bold}
-	other_second := Text{text: "and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole,", style: Normal}
-	other_second_italic := Text{text: "and that means comfort.", style: Italic}
+	one := Text{Content: "In a hole in the ground there lived a hobbit. ", Style: Normal}
+	other := Text{Content: "Not a nasty, dirty, wet hole,", Style: Normal}
+	other_bold := Text{Content: "filled with the ends of worms", Style: Bold}
+	other_second := Text{Content: "and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole,", Style: Normal}
+	other_second_italic := Text{Content: "and that means comfort.", Style: Italic}
 
-	p := Paragraph{text_elements: []Text{one, other, other_bold, other_second, other_second_italic}}
-	assert.Equal(t, "In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, __filled with the ends of worms__ and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, *and that means comfort.* \n", p.ToString())
+	p := Paragraph{TextElements: []Text{one, other, other_bold, other_second, other_second_italic}}
+	assert.Equal(t, "In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, __filled with the ends of worms__ and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, *and that means comfort.* " + LINE_RETURN, p.ToString())
 
 	md.Add(p)
-	assert.Len(t, strings.Split(md.Print(), "\n"), 3)
+	assert.Len(t, strings.Split(md.Print(), LINE_RETURN), 3)
 }

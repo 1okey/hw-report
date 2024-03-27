@@ -4,17 +4,19 @@ import (
 	"strings"
 )
 
+const LINE_RETURN = "\n"
+
 type Serializable interface {
 	ToString() string
 }
 
 type Heading struct {
-	text Text
-	size uint8
+	Text Paragraph
+	Size uint8
 }
 
 func (h Heading) ToString() string {
-	return strings.Repeat("#", int(h.size)) + " " + h.text.ToString() + "\n"
+	return strings.Repeat("#", int(h.Size)) + " " + h.Text.ToString()
 }
 
 type TextStyle string
@@ -27,41 +29,41 @@ const (
 )
 
 type Text struct {
-	text  string
-	style TextStyle
+	Content  string
+	Style TextStyle
 }
 
 func (p Text) ToString() string {
-	switch p.style {
+	switch p.Style {
 	default:
 	case Normal:
-		return p.text
+		return p.Content
 
 	case Code:
-		return " `" + p.text + "` "
+		return " `" + p.Content + "` "
 
 	case Bold:
-		return " __" + p.text + "__ "
+		return " __" + p.Content + "__ "
 
 	case Italic:
-		return " *" + p.text + "* "
+		return " *" + p.Content + "* "
 	}
 
 	return ""
 }
 
 type Paragraph struct {
-	text_elements []Text
+	TextElements []Text
 }
 
 func (p Paragraph) ToString() string {
 	elements := make([]string, 0)
 
-	for _, el := range p.text_elements {
+	for _, el := range p.TextElements {
 		elements = append(elements, el.ToString())
 	}
 
-	return strings.Join(elements, "") + "\n"
+	return strings.Join(elements, "") + LINE_RETURN
 }
 
 type Markdown struct {
@@ -86,4 +88,8 @@ func (d *Markdown) Print() string {
 	}
 
 	return strings.Join(output, "")
+}
+
+func (d *Markdown) Bytes() []byte {
+	return []byte(d.Print())
 }
